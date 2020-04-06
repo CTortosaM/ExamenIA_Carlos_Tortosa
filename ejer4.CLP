@@ -9,20 +9,46 @@
 )
 
 (defrule cargarPeso
+	(declare (salience 100))
 	?f <- (carro lugar ?l pMax ?m pActual ?p)
-	?o <- (currentObj ?o)
+	?f0 <- (currentObj ?o)
 	?f2 <- (objetivo ?o origen ?ori destino ?dest p ?np)
 (test (= ?p 0))
 (test (< ?np ?m))
 =>
 (retract ?f)
 (assert (carro lugar ?ori pMax 50 pActual ?np))
-(retract ?o)
+(printout t "Cargo ")
+(printout t  ?np)
+(printout t " en ")
+(printout t  ?ori crlf)
+
 )
 
 
-(defrule descargarEnEstanteria
-	?f <- (carro lugar m pxMax ?m pActual ?p)
-	?f1 <- (objetivo ?l2)
+(defrule descargarPeso
+	(declare (salience 100))
+	?f <- (carro lugar ?l pMax ?m pActual ?p)
+	?f0 <- (currentObj ?o)
+	?f2 <- (objetivo ?o origen ?ori destino ?dest p ?np)
+(test (> ?p 0))
+(test (neq ?l ?dest))
 =>
+(retract ?f)
+(assert (carro lugar ?dest pMax 50 pActual 0))
+(retract ?f0)
+(assert (currentObj (+ 1 ?o)))
+(printout t "Descargo ")
+(printout t  ?p)
+(printout t " en ")
+(printout t  ?dest crlf)
+)
+
+
+(defrule final
+(declare (salience 1))
+	?f <- (carro lugar ?l pMax ?m pActual ?p)
+=>
+(printout t "Completados los objetivos" crlf)
+(halt)
 )
